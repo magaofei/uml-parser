@@ -4,25 +4,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import com.github.javaparser.ast.body.*;
 import com.uml.parser.enums.Modifiers;
 import com.uml.parser.model.UMLClass;
 import com.uml.parser.model.UMLMethod;
 import com.uml.parser.model.UMLVariable;
 
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.BodyDeclaration;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.body.ConstructorDeclaration;
-import japa.parser.ast.body.FieldDeclaration;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.body.TypeDeclaration;
-import japa.parser.ast.body.VariableDeclarator;
-import japa.parser.ast.expr.VariableDeclarationExpr;
-import japa.parser.ast.stmt.BlockStmt;
-import japa.parser.ast.stmt.ExpressionStmt;
-import japa.parser.ast.stmt.Statement;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
 
 /**
  * Parses Java classes to create {@link UMLClass} for each input class.
@@ -68,8 +62,17 @@ public class ParseJava {
 	 */
 	private void createUMLClass(CompilationUnit compliationUnit){
 		List<TypeDeclaration> types = compliationUnit.getTypes();
+		if (types == null) {
+			return;
+		}
 		for(TypeDeclaration type : types){
 			List<BodyDeclaration> bodyDeclarations = type.getMembers();
+
+			if (!(type instanceof ClassOrInterfaceDeclaration)) {
+
+				// TODO enum
+				continue;
+			}
 			boolean isInterface = ((ClassOrInterfaceDeclaration) type).isInterface();
 			
 			UMLClass umlClass = counselor.getUMLClass(type.getName());

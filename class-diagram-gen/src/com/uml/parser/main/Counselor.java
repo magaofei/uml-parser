@@ -10,12 +10,12 @@ import com.uml.parser.model.UMLClass;
 import com.uml.parser.model.UMLMethod;
 import com.uml.parser.model.UMLVariable;
 
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.body.Parameter;
-import japa.parser.ast.body.TypeDeclaration;
-import japa.parser.ast.expr.VariableDeclarationExpr;
-import japa.parser.ast.type.ClassOrInterfaceType;
-import japa.parser.ast.type.Type;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 
 /**
  * Deals with creating relationships between {@link UMLClass} by using the 
@@ -124,11 +124,17 @@ public class Counselor {
 		Relationship relationship = new Relationship();
 		relationship.setType(relationType);
 		if(UMLHelper.isUMLClassArray(relative)){
-			relationship.setParent(counselor.getUMLClass(UMLHelper.getArrayClassName(relative)));
+			String className = UMLHelper.getArrayClassName(relative);
+			if (className == null || className.equals("")) {
+				return;
+			}
+
+			relationship.setParent(counselor.getUMLClass(className));
 			if(relationType == RelationType.ASSOCIATION){
 				relationship.setParentCardinality("1");
 				relationship.setChildCardinality("0..*");
 			}
+
 		}else {
 			relationship.setParent(counselor.getUMLClass(relative.toString()));
 		}

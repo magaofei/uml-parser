@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.uml.parser.enums.Modifiers;
 
-import japa.parser.ast.type.Type;
+import com.github.javaparser.ast.type.Type;
 
-import japa.parser.ast.body.Parameter;
+import com.github.javaparser.ast.body.Parameter;
 
 /**
  * Model representing methods in the classes

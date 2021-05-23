@@ -6,10 +6,10 @@ import java.util.List;
 import com.uml.parser.model.Relationship;
 import com.uml.parser.model.UMLClass;
 
-import japa.parser.ast.type.ClassOrInterfaceType;
-import japa.parser.ast.type.PrimitiveType;
-import japa.parser.ast.type.ReferenceType;
-import japa.parser.ast.type.Type;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
 
 /**
  * Helper provides methods for important checks and operations
@@ -61,16 +61,22 @@ public class UMLHelper {
 		if(type.toString().contains("[")){
 			return getElementName(type.toString());
 		}else if(type.toString().contains("<")){
-			ReferenceType collectionType = (ReferenceType) type;
-			ClassOrInterfaceType classOrInterfaceType = (ClassOrInterfaceType) collectionType.getType();
-			if(classOrInterfaceType.getTypeArgs() != null){
-				List<Type> args = classOrInterfaceType.getTypeArgs();
-				for(Type arg : args){
-					if(isUMLClassType(arg)){
-						return arg.toString();
+			if (type instanceof ReferenceType) {
+				ReferenceType collectionType = (ReferenceType) type;
+				if (collectionType.getType() instanceof ClassOrInterfaceType) {
+					ClassOrInterfaceType classOrInterfaceType = (ClassOrInterfaceType) collectionType.getType();
+					if(classOrInterfaceType.getTypeArgs() != null){
+						List<Type> args = classOrInterfaceType.getTypeArgs();
+						for(Type arg : args){
+							if(isUMLClassType(arg)){
+								return arg.toString();
+							}
+						}
 					}
 				}
 			}
+
+
 		}
 		return "";
 	}

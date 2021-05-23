@@ -3,8 +3,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -24,15 +29,15 @@ public class RunUMLParser {
 	
 	public static void main(String[] args) {
 
-		if (args.length < 2) {
-			System.out.println("Invalid arguments, need two arguments!");
-			System.out.println("1. Complete folder path to Java files.   2. UML Class diagram output PNG file name");
-			System.out.println("Output file will be of .png format so no need to enter extenstion");
-			return;
-		}
+//		if (args.length < 2) {
+//			System.out.println("Invalid arguments, need two arguments!");
+//			System.out.println("1. Complete folder path to Java files.   2. UML Class diagram output PNG file name");
+//			System.out.println("Output file will be of .png format so no need to enter extenstion");
+//			return;
+//		}
 
 		RunUMLParser obj = new RunUMLParser();
-		obj.startProcess(args[0], args[1]);
+		obj.startProcess("/Users/tal/GitHub/focus/src/main/java/com/tal/focus", "test");
 		obj.clearTestFolder();
 	}
 	
@@ -65,15 +70,27 @@ public class RunUMLParser {
 	 * @return
 	 */
 	private List<File> getFileListFromFolder(File folder) {
-		List<File> files = new ArrayList<>();
-		File[] filesInFolder = folder.listFiles();
-		for (int i = 0; filesInFolder != null && i < filesInFolder.length; i++) {
-			File file = filesInFolder[i];
-			if (isValidFile(file)) {
-				files.add(file);
+//		List<File> files = new ArrayList<>();
+		try {
+			try (Stream<Path> stream = Files.walk(folder.toPath())) {
+				return stream
+						.filter(file -> !Files.isDirectory(file))
+						.filter(file -> !file.toString().contains("internal"))
+						.map(Path::toFile)
+						.collect(Collectors.toList());
 			}
+		} catch (IOException e) {
+			throw new RuntimeException();
 		}
-		return files;
+
+//		File[] filesInFolder = folder.listFiles();
+//		for (int i = 0; filesInFolder != null && i < filesInFolder.length; i++) {
+//			File file = filesInFolder[i];
+//			if (isValidFile(file)) {
+//				files.add(file);
+//			}
+//		}
+//		return files;
 	}
 
 	/**

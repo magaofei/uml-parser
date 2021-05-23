@@ -1,7 +1,7 @@
 package com.uml.parser.model;
 import com.uml.parser.enums.Modifiers;
 
-import japa.parser.ast.type.Type;
+import com.github.javaparser.ast.type.Type;
 
 /**
  * Model representing variables in classes

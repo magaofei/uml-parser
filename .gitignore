@@ -61,3 +61,10 @@ jspm_packages
 # ideal workspace.xml
 .idea/workspace.xml
 .idea/runConfigurations/bin_www.xml
+
+.idea/
+
+PlantUMLGrammar.txt
+
+test.png
+*.iml
